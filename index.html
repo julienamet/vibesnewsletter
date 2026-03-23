@@ -48,18 +48,16 @@
     }
     .nav-subscribe:hover { opacity: 0.8; }
 
-    /* 1. LOGO — Playfair italic to match hero em */
+    /* 1. LOGO — Playfair italic, centred */
     .logo {
       font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: 64px;
       letter-spacing: 0.04em;
       font-weight: 600;
-      /* spacer on right to visually balance the subscribe button on left */
       min-width: 160px;
       text-align: center;
     }
-    /* invisible spacer so logo stays centred */
     .nav-spacer {
       min-width: 160px;
     }
@@ -159,14 +157,14 @@
     }
 
     .card-img-placeholder {
-      width: 64px;
-      height: 64px;
-      background: #e0e0e0;
+      width: auto;
+      height: auto;
+      background: none;
       margin-bottom: 14px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 22px;
+      justify-content: flex-start;
+      font-size: 32px;
     }
 
     .date-badge {
@@ -222,11 +220,16 @@
       gap: 12px;
     }
 
-    /* 4+5. SELECT BUTTON — toggles interest, shows tick when selected */
-    .select-btn {
+    /* MAXIMISE BUTTON */
+    .btn-row {
       position: absolute;
       top: 20px;
       right: 20px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .select-btn, .expand-btn {
       width: 34px;
       height: 34px;
       border: 1.5px solid #000;
@@ -242,14 +245,90 @@
       user-select: none;
       line-height: 1;
     }
-    .select-btn:hover { background: #f0f0f0; }
-    /* 5. tick state */
+    .select-btn:hover, .expand-btn:hover { background: #f0f0f0; }
     .card.selected .select-btn {
       background: #000;
       color: #fff;
       border-color: #000;
       font-size: 15px;
     }
+    /* MAXIMISE — thin bar below title */
+    .expand-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      cursor: pointer;
+      padding: 6px 0;
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
+    }
+    .expand-bar span {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      flex: 1;
+    }
+    .expand-bar svg {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+    .expand-bar:hover { background: #f7f7f7; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      max-width: 600px;
+      width: 90vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 40px;
+      position: relative;
+    }
+    .modal-emoji { font-size: 40px; margin-bottom: 16px; }
+    .modal-date { font-size: 10px; letter-spacing: 0.1em; color: #bbb; margin-bottom: 6px; display: block; }
+    .modal-category { font-size: 10px; letter-spacing: 0.14em; color: #999; text-transform: uppercase; margin-bottom: 10px; }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 600;
+      line-height: 1.25;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 20px;
+    }
+    .modal-desc { font-size: 14px; color: #444; line-height: 1.75; margin-bottom: 20px; }
+    .modal-freq { font-size: 10px; letter-spacing: 0.1em; color: #888; }
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 34px;
+      height: 34px;
+      border: 1.5px solid #000;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .modal-close:hover { background: #000; color: #fff; }
 
     /* LOADING */
     .loading {
@@ -351,6 +430,18 @@
     <span>Privacy Policy</span>
   </footer>
 
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" id="modal">
+      <div class="modal-close" onclick="closeModalDirect()">×</div>
+      <div class="modal-emoji" id="modal-emoji"></div>
+      <span class="modal-date" id="modal-date"></span>
+      <div class="modal-category" id="modal-category"></div>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-freq" id="modal-freq"></div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
   <script>
@@ -447,11 +538,17 @@
             <span class="date-badge">${data.date || ''}</span>
             <div class="card-trend-name">${card.trendName || ''}</div>
             <div class="card-title">${card.title}</div>
+            <div class="expand-bar" onclick="openModal(${JSON.stringify(card)}, ${JSON.stringify(data.date || '')})" title="Read brief">
+              <span>Read Brief</span>
+              <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 6h10M7 2l4 4-4 4" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
             <div class="card-body">
               <div class="card-desc">${card.desc}</div>
               <div class="card-meta"><span>${card.freq}</span></div>
             </div>
-            <div class="select-btn" onclick="toggleSelect('${card.id}', this)" title="Select this category">+</div>
+            <div class="btn-row">
+              <div class="select-btn" onclick="toggleSelect('${card.id}', this)" title="Select this category">+</div>
+            </div>
           `;
           grid.appendChild(el);
         });
@@ -530,6 +627,26 @@
       t.textContent = msg;
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 4000);
+    }
+
+    function openModal(card, date) {
+      document.getElementById('modal-emoji').textContent = card.emoji || '📰';
+      document.getElementById('modal-date').textContent = date;
+      document.getElementById('modal-category').textContent = card.trendName || '';
+      document.getElementById('modal-title').textContent = card.title;
+      document.getElementById('modal-desc').textContent = card.desc;
+      document.getElementById('modal-freq').textContent = card.freq;
+      document.getElementById('modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+    }
+
+    function closeModalDirect() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
     }
 
     loadBriefs();
