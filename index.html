@@ -183,6 +183,7 @@
       text-transform: uppercase;
     }
 
+    /* CARD TITLE — clickable, underlines on hover */
     .card-title {
       font-family: 'Playfair Display', serif;
       font-size: 17px;
@@ -190,9 +191,15 @@
       margin-bottom: 6px;
       line-height: 1.25;
       padding-right: 44px;
+      cursor: pointer;
+      display: inline-block;
+      text-decoration: none;
+      transition: text-decoration 0.15s;
     }
-
-    /* EXPANDABLE BODY */
+    .card-title:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
     .card-body {
       overflow: hidden;
       max-height: 0;
@@ -252,32 +259,7 @@
       border-color: #000;
       font-size: 15px;
     }
-    /* MAXIMISE — thin bar below title */
-    .expand-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 10px;
-      margin-bottom: 4px;
-      cursor: pointer;
-      padding: 6px 0;
-      border-top: 1px solid #000;
-      border-bottom: 1px solid #000;
-    }
-    .expand-bar span {
-      font-size: 9px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      font-family: 'Inter', sans-serif;
-      font-weight: 500;
-      flex: 1;
-    }
-    .expand-bar svg {
-      width: 12px;
-      height: 12px;
-      flex-shrink: 0;
-    }
-    .expand-bar:hover { background: #f7f7f7; }
+
 
     /* MODAL */
     .modal-overlay {
@@ -465,8 +447,7 @@
         date: today,
         sections: [
           {
-            // 3. New section title
-            title: "PERSONALISED TRENDS DIRECTLY TO YOUR MAILBOX FOR OUR VIPS",
+            title: "PERSONALISED TRENDS DIRECTLY TO YOUR MAILBOX FOR OUR SUPERSTARS",
             // 7. All 5 categories in this one section separated by thick black lines
             cards: [
               {
@@ -537,11 +518,7 @@
             <div class="card-img-placeholder">${card.emoji || '📰'}</div>
             <span class="date-badge">${data.date || ''}</span>
             <div class="card-trend-name">${card.trendName || ''}</div>
-            <div class="card-title">${card.title}</div>
-            <div class="expand-bar" onclick="openModal(${JSON.stringify(card)}, ${JSON.stringify(data.date || '')})" title="Read brief">
-              <span>Read Brief</span>
-              <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 6h10M7 2l4 4-4 4" stroke="#000" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
+            <div class="card-title" onclick="openModal(${JSON.stringify(card)}, ${JSON.stringify(data.date || '')})">${card.title}</div>
             <div class="card-body">
               <div class="card-desc">${card.desc}</div>
               <div class="card-meta"><span>${card.freq}</span></div>
