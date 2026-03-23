@@ -138,6 +138,7 @@
       padding-top: 12px;
       margin-bottom: 24px;
     }
+    .section-title:empty { display: none; }
 
     /* GRID */
     .grid {
@@ -432,13 +433,61 @@
 
     async function loadBriefs() {
       try {
-        const res = await fetch('./briefs.json?nocache=' + Date.now());
+        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        const res = await fetch(`./briefs/vibes-${today}.html?nocache=` + Date.now());
         if (!res.ok) throw new Error('not found');
-        const data = await res.json();
+        const html = await res.text();
+        const data = parseHtmlBrief(html);
+        if (!data.sections[0].cards.length) throw new Error('no cards parsed');
         renderBriefs(data);
       } catch (e) {
         renderBriefs(getFallbackData());
       }
+    }
+
+    function parseHtmlBrief(html) {
+      const today = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+      const CATEGORIES = [
+        { id: 'travel',    emoji: '✈️',  trendName: 'Travel',             header: '✈️ TRAVEL' },
+        { id: 'lifestyle', emoji: '🌿',  trendName: 'Lifestyle',          header: '🌿 LIFESTYLE' },
+        { id: 'beauty',    emoji: '💄',  trendName: 'Beauty/Fashion',     header: '💄 BEAUTY' },
+        { id: 'food',      emoji: '🍜',  trendName: 'Food',               header: '🍜 FOOD' },
+        { id: 'memes',     emoji: '😂',  trendName: 'Memes/Entertainment',header: '😂 MEME' },
+      ];
+
+      // Split on lone "-" divider lines
+      const sections = html.split(/\n\s*-\s*\n/);
+
+      const cards = [];
+      for (const cat of CATEGORIES) {
+        const section = sections.find(s => s.includes(cat.header));
+        if (!section) continue;
+
+        // Extract trend name from the first <a> tag (the trend link)
+        const trendMatch = section.match(/"([^"]+)"/);
+        const title = trendMatch ? trendMatch[1] : cat.trendName;
+
+        // Strip all HTML tags to get plain text for the desc
+        const plain = section.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+
+        // Grab "Why it's working" + "How to use it" as the description
+        const whyMatch = plain.match(/Why it[''']s working[:\s]*(.*?)(?:How to use it|Post:|🏷️|$)/i);
+        const howMatch = plain.match(/How to use it[:\s]*(.*?)(?:Post:|🏷️|$)/i);
+        const postMatch = plain.match(/Post:[:\s]*(.*?)(?:🏷️|$)/i);
+
+        const descParts = [
+          whyMatch ? whyMatch[1].trim() : '',
+          howMatch ? howMatch[1].trim() : '',
+          postMatch ? postMatch[1].trim() : '',
+        ].filter(Boolean);
+
+        const desc = descParts.join(' · ').slice(0, 300);
+
+        cards.push({ id: cat.id, emoji: cat.emoji, trendName: cat.trendName, title, desc, freq: 'DAILY', fullHtml: section.trim() });
+      }
+
+      return { date: today, sections: [{ title: '', cards }] };
     }
 
     function getFallbackData() {
@@ -447,7 +496,7 @@
         date: today,
         sections: [
           {
-            title: "PERSONALISED TRENDS DIRECTLY TO YOUR MAILBOX FOR OUR SUPERSTARS",
+            title: "",
             // 7. All 5 categories in this one section separated by thick black lines
             cards: [
               {
@@ -611,7 +660,12 @@
       document.getElementById('modal-date').textContent = date;
       document.getElementById('modal-category').textContent = card.trendName || '';
       document.getElementById('modal-title').textContent = card.title;
-      document.getElementById('modal-desc').textContent = card.desc;
+      const descEl = document.getElementById('modal-desc');
+      if (card.fullHtml) {
+        descEl.innerHTML = card.fullHtml;
+      } else {
+        descEl.textContent = card.desc;
+      }
       document.getElementById('modal-freq').textContent = card.freq;
       document.getElementById('modal-overlay').classList.add('open');
       document.body.style.overflow = 'hidden';
