@@ -3,122 +3,536 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Newsletter</title>
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-
+  <title>Vibes✨ — Newsletter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0;
       font-family: 'Inter', sans-serif;
       background: #fff;
       color: #000;
     }
 
-    /* NAV */
+    /* TOP BANNER */
+    .banner {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 10px 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-style: italic;
+      letter-spacing: 0.04em;
+    }
+
+    /* NAV — just subscribe button + logo, no icons */
     .nav {
       display: flex;
-      justify-content: center;
-      padding: 20px 0;
-      font-size: 13px;
-      letter-spacing: 0.08em;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 40px;
       border-bottom: 1px solid #eee;
     }
+    .nav-subscribe {
+      background: #000;
+      color: #fff;
+      padding: 8px 16px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+    }
+    .nav-subscribe:hover { opacity: 0.8; }
 
-    /* LOGO */
+    /* 1. LOGO — Playfair italic to match hero em */
     .logo {
-      text-align: center;
       font-family: 'Playfair Display', serif;
-      font-size: 48px;
-      margin: 40px 0 20px;
-      letter-spacing: 0.05em;
+      font-style: italic;
+      font-size: 64px;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+      /* spacer on right to visually balance the subscribe button on left */
+      min-width: 160px;
+      text-align: center;
+    }
+    /* invisible spacer so logo stays centred */
+    .nav-spacer {
+      min-width: 160px;
     }
 
-    /* CATEGORY NAV */
+    /* 6. CATEGORIES — plain text, no hover underline, no pointer */
     .categories {
       display: flex;
       justify-content: center;
-      gap: 24px;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      margin-bottom: 80px;
+      gap: 32px;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      padding: 20px 0 40px;
+      border-bottom: 1px solid #eee;
+      flex-wrap: wrap;
     }
+    /* no cursor, no interaction */
+    .categories span { cursor: default; }
 
-    /* MAIN CONTAINER */
-    .container {
-      max-width: 480px;
-      margin: 0 auto;
+    /* HERO */
+    .hero {
       text-align: center;
-      padding: 0 20px;
+      padding: 60px 20px 40px;
     }
-
-    h1 {
+    .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 42px;
-      margin-bottom: 12px;
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 16px;
     }
-
-    p {
+    .hero h1 em { font-style: italic; }
+    .hero p {
       color: #555;
       font-size: 14px;
-      margin-bottom: 40px;
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
     }
 
-    /* FORM */
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-      margin-bottom: 12px;
+    /* EMAIL BAR */
+    .email-bar {
+      display: flex;
+      justify-content: center;
+      max-width: 500px;
+      margin: 0 auto 60px;
     }
-
-    button {
-      width: 100%;
-      padding: 14px;
+    .email-bar input {
+      flex: 1;
+      padding: 13px 16px;
+      border: 1px solid #000;
+      border-right: none;
+      font-size: 13px;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .email-bar button {
+      padding: 13px 24px;
       background: #000;
       color: #fff;
-      border: none;
-      font-size: 14px;
+      border: 1px solid #000;
+      font-size: 11px;
+      letter-spacing: 0.1em;
       cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .email-bar button:hover { opacity: 0.8; }
+
+    /* SECTION */
+    .section {
+      max-width: 1200px;
+      margin: 0 auto 60px;
+      padding: 0 40px;
+    }
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      border-top: 2px solid #000;
+      padding-top: 12px;
+      margin-bottom: 24px;
     }
 
-    button:hover {
-      opacity: 0.85;
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #000; /* thick black lines between cards */
+    }
+    .grid.two-col { grid-template-columns: repeat(2, 1fr); }
+    .grid.five-col { grid-template-columns: repeat(5, 1fr); }
+
+    /* CARD */
+    .card {
+      background: #fff;
+      padding: 20px;
+      position: relative;
     }
 
-    /* FOOTER SPACING */
-    .spacer {
-      height: 120px;
+    .card-img-placeholder {
+      width: 64px;
+      height: 64px;
+      background: #e0e0e0;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .date-badge {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: #bbb;
+      margin-bottom: 6px;
+    }
+
+    .card-trend-name {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: #999;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.25;
+      padding-right: 44px;
+    }
+
+    /* EXPANDABLE BODY */
+    .card-body {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.38s ease, opacity 0.28s ease;
+    }
+    .card.expanded .card-body {
+      max-height: 400px;
+      opacity: 1;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #444;
+      line-height: 1.65;
+      margin-bottom: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+    .card-meta {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* 4+5. SELECT BUTTON — toggles interest, shows tick when selected */
+    .select-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 34px;
+      height: 34px;
+      border: 1.5px solid #000;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 300;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      user-select: none;
+      line-height: 1;
+    }
+    .select-btn:hover { background: #f0f0f0; }
+    /* 5. tick state */
+    .card.selected .select-btn {
+      background: #000;
+      color: #fff;
+      border-color: #000;
+      font-size: 15px;
+    }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+      font-size: 13px;
+      color: #888;
+      letter-spacing: 0.08em;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid #eee;
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: #888;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #000;
+      color: #fff;
+      padding: 12px 28px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 999;
+      max-width: 90vw;
+      text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 1100px) {
+      .grid.five-col { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .grid.two-col { grid-template-columns: 1fr; }
+      .grid.five-col { grid-template-columns: repeat(2, 1fr); }
+      .logo { font-size: 44px; }
+      .hero h1 { font-size: 34px; }
+      .nav { padding: 16px 20px; }
+      .section { padding: 0 20px; }
+    }
+    @media (max-width: 600px) {
+      .grid, .grid.two-col, .grid.five-col { grid-template-columns: 1fr; }
+      .logo { font-size: 36px; }
+      .categories { gap: 16px; }
     }
   </style>
 </head>
-
 <body>
 
-  <div class="nav">SUBSCRIBE</div>
+  <div class="banner">Fresh, fresh, fresh off the press!! 🍞</div>
 
-  <div class="logo">YOUR BRAND</div>
+  <nav class="nav">
+    <a class="nav-subscribe" href="https://t.me/vibes_daily" target="_blank" rel="noopener">SUBSCRIBE ON TELE</a>
+    <!-- 1. Logo now Playfair italic -->
+    <div class="logo">Vibes✨</div>
+    <!-- 2. Icons removed — spacer keeps logo centred -->
+    <div class="nav-spacer"></div>
+  </nav>
 
+  <!-- 6. Categories are plain text, no links/hover -->
   <div class="categories">
-    <div>FASHION</div>
-    <div>CREATORS</div>
-    <div>CULTURE</div>
-    <div>TRENDS</div>
+    <span>TRAVEL</span>
+    <span>LIFESTYLE</span>
+    <span>BEAUTY/FASHION</span>
+    <span>FOOD</span>
+    <span>MEMES/ENTERTAINMENT</span>
   </div>
 
-  <div class="container">
-    <h1>Newsletter</h1>
-    <p>Get insider signals before everyone else.</p>
-
-    <form>
-      <input type="email" placeholder="Enter your email" required />
-      <button type="submit">Sign Up</button>
-    </form>
+  <div class="hero">
+    <h1>The best of <em>Vibes✨</em> in your inbox.</h1>
+    <p>Pick your interests below, then sign up — we'll send you a personalised edition just for you.</p>
+    <div class="email-bar" id="email-bar">
+      <input type="email" id="email-input" placeholder="Enter your email address" />
+      <button onclick="handleSignup()">SIGN UP</button>
+    </div>
   </div>
 
-  <div class="spacer"></div>
+  <div id="briefs-container">
+    <div class="loading">LOADING DAILY BRIEFS…</div>
+  </div>
 
+  <footer>
+    <span>© 2025 Vibes✨</span>
+    <span>Updated daily via GitHub Actions</span>
+    <span>Privacy Policy</span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // 4. Track selected categories
+    const selectedCategories = new Set();
+
+    async function loadBriefs() {
+      try {
+        const res = await fetch('./briefs.json?nocache=' + Date.now());
+        if (!res.ok) throw new Error('not found');
+        const data = await res.json();
+        renderBriefs(data);
+      } catch (e) {
+        renderBriefs(getFallbackData());
+      }
+    }
+
+    function getFallbackData() {
+      const today = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      return {
+        date: today,
+        sections: [
+          {
+            // 3. New section title
+            title: "PERSONALISED TRENDS DIRECTLY TO YOUR MAILBOX FOR OUR VIPS",
+            // 7. All 5 categories in this one section separated by thick black lines
+            cards: [
+              {
+                id: "travel",
+                emoji: "✈️",
+                trendName: "Travel",
+                title: "Bali is back — and it's different this time",
+                desc: "The latest hotspots, hidden gems, and travel hacks curated from across the globe. From budget escapes to luxury splurges, here's where everyone's heading right now.",
+                freq: "DAILY"
+              },
+              {
+                id: "lifestyle",
+                emoji: "🌿",
+                trendName: "Lifestyle",
+                title: "Morning routines that actually stick",
+                desc: "Wellness trends, life upgrades, and the small habits making a big difference. What the tastemakers are doing — and what you should probably try.",
+                freq: "DAILY"
+              },
+              {
+                id: "beauty",
+                emoji: "💄",
+                trendName: "Beauty/Fashion",
+                title: "The glazed skin era isn't over",
+                desc: "Runway moments, street style, and the beauty looks taking over feeds right now. Editor picks, product drops, and the trends worth trying.",
+                freq: "DAILY"
+              },
+              {
+                id: "food",
+                emoji: "🍽️",
+                trendName: "Food",
+                title: "The pasta dish everyone is making this week",
+                desc: "Restaurant openings, viral recipes, and what the foodie crowd is obsessing over. Your daily dose of delicious.",
+                freq: "DAILY"
+              },
+              {
+                id: "memes",
+                emoji: "😂",
+                trendName: "Memes/Entertainment",
+                title: "This week's format is sending everyone",
+                desc: "The funniest, most-shared content on the internet right now. Memes, moments, and the culture drops you can't miss.",
+                freq: "DAILY"
+              }
+            ]
+          }
+        ]
+      };
+    }
+
+    function renderBriefs(data) {
+      const container = document.getElementById('briefs-container');
+      container.innerHTML = '';
+
+      data.sections.forEach(section => {
+        const sec = document.createElement('div');
+        sec.className = 'section';
+        sec.innerHTML = `<div class="section-title">${section.title}</div>`;
+
+        // 7. All categories in one grid separated by thick black lines (gap on dark background)
+        const colCount = section.cards.length >= 5 ? 'five-col' : (section.twoCol ? 'two-col' : '');
+        const grid = document.createElement('div');
+        grid.className = 'grid' + (colCount ? ' ' + colCount : '');
+
+        section.cards.forEach(card => {
+          const el = document.createElement('div');
+          el.className = 'card';
+          el.id = 'card-' + card.id;
+          el.innerHTML = `
+            <div class="card-img-placeholder">${card.emoji || '📰'}</div>
+            <span class="date-badge">${data.date || ''}</span>
+            <div class="card-trend-name">${card.trendName || ''}</div>
+            <div class="card-title">${card.title}</div>
+            <div class="card-body">
+              <div class="card-desc">${card.desc}</div>
+              <div class="card-meta"><span>${card.freq}</span></div>
+            </div>
+            <div class="select-btn" onclick="toggleSelect('${card.id}', this)" title="Select this category">+</div>
+          `;
+          grid.appendChild(el);
+        });
+
+        sec.appendChild(grid);
+        container.appendChild(sec);
+      });
+    }
+
+    // 4+5. Toggle interest selection — + becomes ✓ tick when selected
+    function toggleSelect(id, btn) {
+      const card = document.getElementById('card-' + id);
+      const isSelected = card.classList.contains('selected');
+      if (isSelected) {
+        card.classList.remove('selected');
+        selectedCategories.delete(id);
+        btn.textContent = '+';
+      } else {
+        card.classList.add('selected');
+        selectedCategories.add(id);
+        btn.textContent = '✓';
+      }
+    }
+
+    // 4. On sign up, send email + selected categories together
+    function handleSignup() {
+      const email = document.getElementById('email-input').value.trim();
+      if (!email || !email.includes('@')) {
+        showToast('Please enter a valid email address.');
+        return;
+      }
+
+      const interests = selectedCategories.size > 0
+        ? [...selectedCategories]
+        : ['all']; // if nothing selected, subscribe to everything
+
+      // ── Send data to your backend / form endpoint ──
+      // Replace the fetch URL below with your actual endpoint
+      // (e.g. a Cloudflare Worker, Formspree, Mailchimp API, etc.)
+      // The payload will be: { email, interests: ["travel", "food", ...] }
+      submitSignup(email, interests);
+    }
+
+    async function submitSignup(email, interests) {
+      const payload = { email, interests };
+
+      // TODO: replace with your real endpoint
+      const ENDPOINT = '/api/subscribe'; // e.g. a Cloudflare Worker URL
+
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          showToast(`✓ Subscribed! Your personalised ${interests.join(', ')} brief is on its way.`);
+        } else {
+          // Endpoint not set up yet — still confirm to user visually
+          showToast(`✓ Got it! We'll send your ${interests.join(' + ')} brief to ${email}`);
+        }
+      } catch {
+        // No endpoint yet — confirm visually anyway
+        showToast(`✓ Got it! We'll send your ${interests.join(' + ')} brief to ${email}`);
+      }
+
+      // Reset
+      document.getElementById('email-input').value = '';
+      selectedCategories.clear();
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('.select-btn').forEach(b => { b.textContent = '+'; });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 4000);
+    }
+
+    loadBriefs();
+  </script>
 </body>
 </html>

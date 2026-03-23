@@ -1,0 +1,101 @@
+name: Daily Briefs Refresh
+
+on:
+  schedule:
+    # Runs every day at 6:00 AM UTC (adjust to your timezone)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  refresh-briefs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Generate briefs.json
+        run: |
+          DATE=$(date +'%A, %B %-d, %Y')
+
+          cat > briefs.json << EOF
+          {
+            "date": "$DATE",
+            "sections": [
+              {
+                "title": "THE ESSENTIALS",
+                "cards": [
+                  {
+                    "id": "fashion",
+                    "emoji": "👗",
+                    "title": "Fashion Brief",
+                    "desc": "Top fashion stories, editor's picks, and style moments curated for $DATE.",
+                    "freq": "DAILY"
+                  },
+                  {
+                    "id": "creators",
+                    "emoji": "✨",
+                    "title": "Creators Spotlight",
+                    "desc": "The most-talked-about creators and what they're making right now — updated $DATE.",
+                    "freq": "DAILY"
+                  },
+                  {
+                    "id": "culture",
+                    "emoji": "🎭",
+                    "title": "Culture Report",
+                    "desc": "Art, music, and the moments shaping the cultural conversation as of $DATE.",
+                    "freq": "DAILY"
+                  }
+                ]
+              },
+              {
+                "title": "TRENDS & INSPIRATION",
+                "twoCol": true,
+                "cards": [
+                  {
+                    "id": "beauty",
+                    "emoji": "💄",
+                    "title": "Beauty Edit",
+                    "desc": "The biggest beauty stories, trends, and product recommendations.",
+                    "freq": "3X WEEKLY"
+                  },
+                  {
+                    "id": "lifestyle",
+                    "emoji": "🌿",
+                    "title": "Lifestyle Brief",
+                    "desc": "Wellness, travel, and the things worth adding to your life.",
+                    "freq": "WEEKLY"
+                  }
+                ]
+              },
+              {
+                "title": "FOOD & LIVING",
+                "twoCol": true,
+                "cards": [
+                  {
+                    "id": "food",
+                    "emoji": "🍽️",
+                    "title": "Food & Dining",
+                    "desc": "Restaurant openings, recipes, and what the tastemakers are eating.",
+                    "freq": "WEEKLY"
+                  },
+                  {
+                    "id": "trends",
+                    "emoji": "📈",
+                    "title": "Trend Report",
+                    "desc": "Emerging signals from the edges of culture before they go mainstream.",
+                    "freq": "2X WEEKLY"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+
+      - name: Commit and push briefs.json
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add briefs.json
+          git diff --staged --quiet || git commit -m "chore: refresh daily briefs for $(date +'%Y-%m-%d')"
+          git push
